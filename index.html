@@ -1467,6 +1467,150 @@
       text-align: right;
     }
 
+    /* 20261018: Googleカレンダー連携 */
+    .gcal-view {
+      display: none;
+      height: calc(100% - 76px);
+      padding: 16px 24px 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .gcal-view.open {
+      display: block;
+    }
+
+    .gcal-card {
+      height: 100%;
+      padding: 17px 20px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .gcal-intro {
+      margin: 8px 0 12px;
+      color: #8babbd;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .gcal-form {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 16px 18px;
+      border: 1px solid rgba(153, 211, 242, 0.1);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .gcal-form label {
+      display: block;
+      margin-top: 10px;
+      color: #95b1c1;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .gcal-form label:first-child {
+      margin-top: 0;
+    }
+
+    .gcal-input {
+      display: block;
+      width: 100%;
+      height: 42px;
+      margin-top: 5px;
+      padding: 0 11px;
+      border: 1px solid rgba(126, 193, 226, 0.2);
+      border-radius: 9px;
+      background: #102d42;
+      color: #eef8fc;
+      font-family: Menlo, Monaco, monospace;
+      font-size: 13px;
+    }
+
+    .gcal-actions {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: flex;
+      margin-top: 14px;
+      -webkit-box-pack: end;
+      -webkit-justify-content: flex-end;
+      justify-content: flex-end;
+    }
+
+    .gcal-button {
+      height: 42px;
+      margin-left: 8px;
+      padding: 0 16px;
+      border: 1px solid rgba(99, 216, 255, 0.36);
+      border-radius: 10px;
+      background: rgba(61, 177, 225, 0.12);
+      color: #82d7f5;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .gcal-button.primary {
+      border-color: #4ab9e9;
+      background: #4ab9e9;
+      color: #071722;
+    }
+
+    .gcal-button.danger {
+      border-color: rgba(255, 119, 100, 0.3);
+      background: rgba(255, 119, 100, 0.08);
+      color: #ffad9e;
+    }
+
+    .gcal-status {
+      min-height: 22px;
+      margin: 12px 0 0;
+      color: #74cdec;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .gcal-status.error {
+      color: #ffad9e;
+    }
+
+    .gcal-notes {
+      max-width: 760px;
+      margin: 12px auto 0;
+      padding: 0 4px 0 22px;
+      color: #7e9fb2;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .calendar-sync-note {
+      margin: -6px 0 9px;
+      color: #7e9fb2;
+      font-size: 11px;
+    }
+
+    .calendar-sync-note.error {
+      color: #ffad9e;
+    }
+
+    .event-repeat-badge.google {
+      color: #8fd4a3;
+    }
+
+    .event-source-label {
+      margin-left: 6px;
+      padding: 3px 7px;
+      border-radius: 8px;
+      background: rgba(143, 212, 163, 0.1);
+      color: #8fd4a3;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
     .backup-view {
       display: none;
       height: calc(100% - 76px);
@@ -3361,6 +3505,7 @@
           <div class="weather-detail-actions">
             <button class="detail-button primary" id="openDisplaySettingsFromSettings" type="button">表示項目</button>
             <button class="detail-button" id="openBackupFromSettings" type="button">バックアップ</button>
+            <button class="detail-button" id="openGoogleCalendarFromSettings" type="button">Googleカレンダー</button>
             <button class="detail-button" id="openGarbageSettingsFromSettings" type="button">ごみ収集日</button>
             <button class="detail-button" id="closeSettingsView" type="button">ホームへ戻る</button>
           </div>
@@ -3565,11 +3710,41 @@
       </div>
     </section>
 
+    <section class="gcal-view" id="googleCalendarView" aria-hidden="true" aria-label="Googleカレンダー連携の設定">
+      <div class="card gcal-card">
+        <div class="settings-page-header">
+          <div>
+            <p class="eyebrow">Googleカレンダーの予定を表示（読み込みのみ）</p>
+            <h1 class="settings-page-title">Googleカレンダー連携</h1>
+          </div>
+          <button class="detail-button" id="closeGoogleCalendarView" type="button">設定へ戻る</button>
+        </div>
+        <p class="gcal-intro">Google Apps Scriptで作成した「ウェブアプリのURL」と「合言葉」を入力してください。メインのカレンダーの予定を15分ごとに読み込み、このiPadの予定と一緒に表示します。</p>
+        <div class="gcal-form">
+          <label for="gcalUrlInput">ウェブアプリのURL</label>
+          <input class="gcal-input" id="gcalUrlInput" type="url" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://script.google.com/macros/s/.../exec">
+          <label for="gcalKeyInput">合言葉</label>
+          <input class="gcal-input" id="gcalKeyInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="スクリプトに書いた合言葉">
+          <div class="gcal-actions">
+            <button class="gcal-button danger" id="gcalDisconnect" type="button">連携を解除</button>
+            <button class="gcal-button" id="gcalRefreshNow" type="button">今すぐ更新</button>
+            <button class="gcal-button primary" id="gcalSave" type="button">保存して接続テスト</button>
+          </div>
+          <p class="gcal-status" id="gcalStatus" role="status" aria-live="polite"></p>
+        </div>
+        <ul class="gcal-notes">
+          <li>予定の追加・変更・削除はGoogleカレンダー（スマートフォンなど）で行ってください。このiPadからGoogleカレンダーへは書き込みません。</li>
+          <li>読み込むのは予定名と日時だけです。URLと合言葉はこのiPadの中だけに保存し、バックアップには含めません。</li>
+          <li>通信できないときは、前回読み込んだ予定を表示します。</li>
+        </ul>
+      </div>
+    </section>
+
     <section class="calendar-view" id="calendarView" aria-hidden="true" aria-label="カレンダーと予定">
       <div class="card calendar-page-card">
         <div class="calendar-header">
           <div>
-            <p class="eyebrow">このiPadの予定</p>
+            <p class="eyebrow">このiPadとGoogleカレンダーの予定</p>
             <h1 class="calendar-title">カレンダー・予定</h1>
           </div>
           <div class="calendar-header-actions">
@@ -3594,6 +3769,7 @@
           <section class="calendar-side" aria-labelledby="calendarDayTitle">
             <h2 id="calendarDayTitle">今日の予定</h2>
             <p class="calendar-side-note">日付を選ぶと、その日の予定を表示します。</p>
+            <p class="calendar-sync-note" id="calendarSyncNote" hidden></p>
             <div class="event-list" id="calendarEventList"></div>
 
             <form class="event-form" id="calendarEventForm">
@@ -4682,6 +4858,25 @@
       var backupCreateStatus = document.getElementById("backupCreateStatus");
       var backupRestoreStatus = document.getElementById("backupRestoreStatus");
       var DISPLAY_SETTINGS_KEY = "ipadDashboardDisplaySettingsV1";
+      var googleCalendarView = document.getElementById("googleCalendarView");
+      var openGoogleCalendarFromSettingsButton = document.getElementById("openGoogleCalendarFromSettings");
+      var closeGoogleCalendarViewButton = document.getElementById("closeGoogleCalendarView");
+      var gcalUrlInput = document.getElementById("gcalUrlInput");
+      var gcalKeyInput = document.getElementById("gcalKeyInput");
+      var gcalSaveButton = document.getElementById("gcalSave");
+      var gcalRefreshNowButton = document.getElementById("gcalRefreshNow");
+      var gcalDisconnectButton = document.getElementById("gcalDisconnect");
+      var gcalStatus = document.getElementById("gcalStatus");
+      var calendarSyncNote = document.getElementById("calendarSyncNote");
+      var GCAL_SETTINGS_KEY = "ipadDashboardGoogleCalendarSettingsV1";
+      var GCAL_CACHE_KEY = "ipadDashboardGoogleCalendarCacheV1";
+      var GCAL_REFRESH_MS = 15 * 60 * 1000;
+      var GCAL_MONTH_STALE_MS = 60 * 60 * 1000;
+      var gcalSettings = null;
+      var gcalCache = { months: {} };
+      var gcalLoading = false;
+      var gcalLastError = "";
+      var gcalCallbackCounter = 0;
       var BACKUP_STORAGE_KEYS = [
         CALENDAR_STORAGE_KEY,
         GARBAGE_STORAGE_KEY,
@@ -5081,6 +5276,379 @@
         return (date.getMonth() + 1) + "月" + date.getDate() + "日（" + weekdays[date.getDay()].replace("曜日", "") + "）の予定";
       }
 
+      /* 20261018: Googleカレンダー連携（Google Apps Script経由・読み込みのみ） */
+      function gcalMonthKey(year, month) {
+        var date = new Date(year, month, 1);
+        return date.getFullYear() + "-" + pad(date.getMonth() + 1);
+      }
+
+      function gcalTimeLabel(timestamp) {
+        var date = new Date(timestamp);
+        return (date.getMonth() + 1) + "/" + date.getDate() + " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+      }
+
+      function gcalIsValidUrl(value) {
+        return /^https:\/\/script\.google\.com\/[^\s"'<>]+\/exec$/.test(value);
+      }
+
+      function loadGoogleCalendarSettings() {
+        var saved;
+        var parsed;
+        gcalSettings = null;
+        try {
+          saved = window.localStorage.getItem(GCAL_SETTINGS_KEY);
+          parsed = saved ? JSON.parse(saved) : null;
+          if (parsed && typeof parsed.url === "string" && typeof parsed.key === "string" && gcalIsValidUrl(parsed.url) && parsed.key) {
+            gcalSettings = { url: parsed.url, key: parsed.key };
+          }
+        } catch (gcalSettingsError) {
+          gcalSettings = null;
+        }
+        try {
+          saved = window.localStorage.getItem(GCAL_CACHE_KEY);
+          parsed = saved ? JSON.parse(saved) : null;
+          gcalCache = parsed && parsed.months && typeof parsed.months === "object" ? parsed : { months: {} };
+        } catch (gcalCacheError) {
+          gcalCache = { months: {} };
+        }
+      }
+
+      function saveGoogleCalendarCache() {
+        try {
+          window.localStorage.setItem(GCAL_CACHE_KEY, JSON.stringify(gcalCache));
+        } catch (gcalCacheSaveError) {
+          gcalLastError = "読み込んだ予定をこのiPadに保存できませんでした";
+        }
+      }
+
+      function pruneGoogleCalendarCache() {
+        var now = new Date();
+        var keep = {};
+        var key;
+        var j;
+        for (j = -2; j <= 6; j += 1) {
+          keep[gcalMonthKey(now.getFullYear(), now.getMonth() + j)] = true;
+        }
+        keep[gcalMonthKey(calendarViewDate.getFullYear(), calendarViewDate.getMonth())] = true;
+        for (key in gcalCache.months) {
+          if (Object.prototype.hasOwnProperty.call(gcalCache.months, key) && !keep[key]) {
+            delete gcalCache.months[key];
+          }
+        }
+      }
+
+      function googleEventsForDate(key) {
+        var month;
+        var list;
+        var result = [];
+        var j;
+        var item;
+        if (!gcalSettings) {
+          return result;
+        }
+        month = gcalCache.months[key.substring(0, 7)];
+        list = month && month.events ? month.events : [];
+        for (j = 0; j < list.length; j += 1) {
+          item = list[j];
+          if (item && item.start <= key && item.end >= key) {
+            result.push(item);
+          }
+        }
+        return result;
+      }
+
+      function gcalJsonp(params, callback) {
+        var name = "ipadDashboardGcal" + new Date().getTime() + "_" + (gcalCallbackCounter += 1);
+        var script = document.createElement("script");
+        var query = [];
+        var finished = false;
+        var timer;
+        var key;
+
+        function finish(error, data) {
+          if (finished) {
+            return;
+          }
+          finished = true;
+          window.clearTimeout(timer);
+          if (error === "timeout") {
+            window[name] = function () {};
+          } else {
+            try {
+              delete window[name];
+            } catch (gcalDeleteError) {
+              window[name] = undefined;
+            }
+          }
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+          callback(error, data);
+        }
+
+        for (key in params) {
+          if (Object.prototype.hasOwnProperty.call(params, key)) {
+            query.push(encodeURIComponent(key) + "=" + encodeURIComponent(params[key]));
+          }
+        }
+        query.push("callback=" + name);
+        query.push("_=" + new Date().getTime());
+        window[name] = function (data) {
+          finish("", data);
+        };
+        script.onerror = function () {
+          finish("network");
+        };
+        timer = window.setTimeout(function () {
+          finish("timeout");
+        }, 25000);
+        script.src = gcalSettings.url + (gcalSettings.url.indexOf("?") >= 0 ? "&" : "?") + query.join("&");
+        document.body.appendChild(script);
+      }
+
+      function gcalErrorMessage(error, data) {
+        if (error === "timeout") {
+          return "Googleカレンダーの応答がありませんでした";
+        }
+        if (error) {
+          return "Googleカレンダーに接続できませんでした。URLと通信状態を確認してください";
+        }
+        if (data && data.error === "unauthorized") {
+          return "合言葉が違います。スクリプトに書いた合言葉と同じか確認してください";
+        }
+        if (data && data.error === "range") {
+          return "読み込む期間の指定に誤りがあります";
+        }
+        return "Googleカレンダーの予定を読み込めませんでした";
+      }
+
+      function fetchGoogleCalendarMonths(firstYear, firstMonth, monthCount, done) {
+        var startDate = new Date(firstYear, firstMonth, 1);
+        var endDate = new Date(firstYear, firstMonth + monthCount, 1);
+        if (!gcalSettings) {
+          if (done) {
+            done(false, 0);
+          }
+          return;
+        }
+        if (gcalLoading) {
+          if (done) {
+            done(false, -1);
+          }
+          return;
+        }
+        gcalLoading = true;
+        gcalJsonp({
+          key: gcalSettings.key,
+          start: calendarDateKey(startDate),
+          end: calendarDateKey(endDate)
+        }, function (error, data) {
+          var j;
+          var k;
+          var monthStart;
+          var monthEnd;
+          var monthKey;
+          var list;
+          var item;
+          var events = [];
+          var now = new Date().getTime();
+          gcalLoading = false;
+          if (error || !data || !data.ok || !data.events || typeof data.events.length !== "number") {
+            gcalLastError = gcalErrorMessage(error, data);
+            updateGoogleCalendarStatus();
+            if (done) {
+              done(false, 0);
+            }
+            return;
+          }
+          for (j = 0; j < data.events.length; j += 1) {
+            item = data.events[j];
+            if (item && /^\d{4}-\d{2}-\d{2}$/.test(item.start) && /^\d{4}-\d{2}-\d{2}$/.test(item.end)) {
+              events.push({
+                id: String(item.id || ""),
+                title: String(item.title || "（タイトルなし）").substring(0, 80),
+                allDay: !!item.allDay,
+                start: item.start,
+                end: item.end < item.start ? item.start : item.end,
+                startTime: /^\d{2}:\d{2}$/.test(item.startTime) ? item.startTime : "",
+                endTime: /^\d{2}:\d{2}$/.test(item.endTime) ? item.endTime : ""
+              });
+            }
+          }
+          for (k = 0; k < monthCount; k += 1) {
+            monthStart = calendarDateKey(new Date(firstYear, firstMonth + k, 1));
+            monthEnd = calendarDateKey(new Date(firstYear, firstMonth + k + 1, 0));
+            monthKey = monthStart.substring(0, 7);
+            list = [];
+            for (j = 0; j < events.length; j += 1) {
+              if (events[j].start <= monthEnd && events[j].end >= monthStart) {
+                list.push(events[j]);
+              }
+            }
+            gcalCache.months[monthKey] = { fetchedAt: now, events: list };
+          }
+          gcalCache.lastSuccess = now;
+          gcalLastError = "";
+          pruneGoogleCalendarCache();
+          saveGoogleCalendarCache();
+          refreshEventDisplays();
+          updateGoogleCalendarStatus();
+          if (done) {
+            done(true, events.length);
+          }
+        });
+      }
+
+      function refreshGoogleCalendar(done) {
+        var now = new Date();
+        fetchGoogleCalendarMonths(now.getFullYear(), now.getMonth() - 1, 4, done);
+      }
+
+      function ensureGoogleCalendarMonth(year, month) {
+        var entry;
+        if (!gcalSettings || gcalLoading) {
+          return;
+        }
+        entry = gcalCache.months[gcalMonthKey(year, month)];
+        if (!entry || new Date().getTime() - entry.fetchedAt > GCAL_MONTH_STALE_MS) {
+          fetchGoogleCalendarMonths(year, month, 1);
+        }
+      }
+
+      function refreshEventDisplays() {
+        var dateValue = calendarEventDate.value;
+        renderHomeTodayEvents();
+        if (calendarView.className.indexOf("open") >= 0) {
+          renderCalendar(true);
+          calendarEventDate.value = dateValue;
+        }
+      }
+
+      function updateGoogleCalendarStatus() {
+        var message = "";
+        var isError = false;
+        if (!gcalSettings) {
+          calendarSyncNote.hidden = true;
+          calendarSyncNote.textContent = "";
+          return;
+        }
+        if (gcalLastError) {
+          isError = true;
+          message = "Googleカレンダー：接続できません" + (gcalCache.lastSuccess ? "（" + gcalTimeLabel(gcalCache.lastSuccess) + " の内容を表示中）" : "");
+        } else if (gcalCache.lastSuccess) {
+          message = "Googleカレンダー：" + gcalTimeLabel(gcalCache.lastSuccess) + " に更新";
+        } else {
+          message = "Googleカレンダー：読み込み中";
+        }
+        calendarSyncNote.hidden = false;
+        calendarSyncNote.textContent = message;
+        calendarSyncNote.className = isError ? "calendar-sync-note error" : "calendar-sync-note";
+      }
+
+      function setGcalStatus(message, isError) {
+        gcalStatus.textContent = message;
+        gcalStatus.className = isError ? "gcal-status error" : "gcal-status";
+      }
+
+      function showGoogleCalendarSettingsStatus() {
+        if (!gcalSettings) {
+          setGcalStatus("未設定です。URLと合言葉を入力して「保存して接続テスト」を押してください", false);
+        } else if (gcalLastError) {
+          setGcalStatus(gcalLastError, true);
+        } else if (gcalCache.lastSuccess) {
+          setGcalStatus("連携中です。最終更新：" + gcalTimeLabel(gcalCache.lastSuccess), false);
+        } else {
+          setGcalStatus("連携中です", false);
+        }
+      }
+
+      function saveGoogleCalendarSettings() {
+        var url = gcalUrlInput.value.replace(/^\s+|\s+$/g, "");
+        var key = gcalKeyInput.value.replace(/^\s+|\s+$/g, "");
+        var previousSettings = gcalSettings;
+        if (!gcalIsValidUrl(url)) {
+          setGcalStatus("URLは https://script.google.com/ で始まり /exec で終わるものを貼り付けてください", true);
+          return;
+        }
+        if (!key) {
+          setGcalStatus("合言葉を入力してください", true);
+          return;
+        }
+        if (gcalLoading) {
+          setGcalStatus("読み込み中です。少し待ってからもう一度押してください", false);
+          return;
+        }
+        gcalSettings = { url: url, key: key };
+        setGcalStatus("接続を確認しています…", false);
+        refreshGoogleCalendar(function (success, count) {
+          if (!success) {
+            gcalSettings = previousSettings;
+            setGcalStatus(gcalLastError + "（設定は保存していません）", true);
+            gcalLastError = previousSettings ? gcalLastError : "";
+            updateGoogleCalendarStatus();
+            return;
+          }
+          try {
+            window.localStorage.setItem(GCAL_SETTINGS_KEY, JSON.stringify(gcalSettings));
+          } catch (gcalSaveError) {
+            setGcalStatus("接続できましたが、設定をこのiPadに保存できませんでした", true);
+            return;
+          }
+          setGcalStatus("接続できました。前月から3か月先までの予定 " + count + "件を読み込みました", false);
+        });
+      }
+
+      function disconnectGoogleCalendar() {
+        gcalSettings = null;
+        gcalCache = { months: {} };
+        gcalLastError = "";
+        try {
+          window.localStorage.removeItem(GCAL_SETTINGS_KEY);
+          window.localStorage.removeItem(GCAL_CACHE_KEY);
+        } catch (gcalRemoveError) {
+          setGcalStatus("設定を削除できませんでした", true);
+          return;
+        }
+        gcalUrlInput.value = "";
+        gcalKeyInput.value = "";
+        updateGoogleCalendarStatus();
+        refreshEventDisplays();
+        setGcalStatus("連携を解除しました。読み込んだ予定も削除しました", false);
+      }
+
+      function combinedEventsForDate(key) {
+        var list = [];
+        var j;
+        var item;
+        var google = googleEventsForDate(key);
+        for (j = 0; j < calendarEvents.length; j += 1) {
+          if (eventOccursOn(calendarEvents[j], key)) {
+            list.push({
+              source: "local",
+              id: calendarEvents[j].id,
+              title: calendarEvents[j].title,
+              time: calendarEvents[j].time || "",
+              label: calendarEvents[j].time || "終日",
+              repeat: calendarEvents[j].repeat || "none"
+            });
+          }
+        }
+        for (j = 0; j < google.length; j += 1) {
+          item = google[j];
+          if (item.allDay || (item.start < key && item.end > key)) {
+            list.push({ source: "google", id: item.id, title: item.title, time: "", label: "終日" });
+          } else if (item.start === key) {
+            list.push({ source: "google", id: item.id, title: item.title, time: item.startTime, label: item.startTime || "終日" });
+          } else {
+            list.push({ source: "google", id: item.id, title: item.title, time: "00:00", label: "〜" + item.endTime });
+          }
+        }
+        list.sort(function (a, b) {
+          return (a.time || "99:99").localeCompare(b.time || "99:99");
+        });
+        return list;
+      }
+
       function loadCalendarEvents() {
         var saved;
         try {
@@ -5115,7 +5683,7 @@
             count += 1;
           }
         }
-        return count;
+        return count + googleEventsForDate(key).length;
       }
 
       function eventOccursOn(calendarEvent, key) {
@@ -5171,14 +5739,7 @@
         var message;
 
         todayEventList.innerHTML = "";
-        for (j = 0; j < calendarEvents.length; j += 1) {
-          if (eventOccursOn(calendarEvents[j], todayKey)) {
-            matching.push(calendarEvents[j]);
-          }
-        }
-        matching.sort(function (a, b) {
-          return (a.time || "99:99").localeCompare(b.time || "99:99");
-        });
+        matching = combinedEventsForDate(todayKey);
 
         if (!matching.length) {
           message = document.createElement("span");
@@ -5193,7 +5754,7 @@
           row.className = "today-event-row";
           time = document.createElement("span");
           time.className = "today-event-time";
-          time.textContent = matching[j].time || "終日";
+          time.textContent = matching[j].label;
           title = document.createElement("span");
           title.className = "today-event-title";
           title.textContent = matching[j].title;
@@ -5220,21 +5781,14 @@
         var repeat;
         var edit;
         var remove;
+        var source;
 
         calendarDayTitle.textContent = calendarDateLabel(selectedCalendarDate);
         if (!editingEventId) {
           calendarEventDate.value = selectedCalendarDate;
         }
         calendarEventList.innerHTML = "";
-
-        for (j = 0; j < calendarEvents.length; j += 1) {
-          if (eventOccursOn(calendarEvents[j], selectedCalendarDate)) {
-            matching.push(calendarEvents[j]);
-          }
-        }
-        matching.sort(function (a, b) {
-          return (a.time || "99:99").localeCompare(b.time || "99:99");
-        });
+        matching = combinedEventsForDate(selectedCalendarDate);
 
         if (!matching.length) {
           row = document.createElement("p");
@@ -5249,13 +5803,23 @@
           row.className = "event-row";
           time = document.createElement("span");
           time.className = "event-time";
-          time.textContent = matching[j].time || "終日";
+          time.textContent = matching[j].label;
           titleWrap = document.createElement("span");
           titleWrap.className = "event-title-wrap";
           title = document.createElement("span");
           title.className = "event-title";
           title.textContent = matching[j].title;
           titleWrap.appendChild(title);
+          if (matching[j].source === "google") {
+            source = document.createElement("span");
+            source.className = "event-source-label";
+            source.textContent = "Google";
+            row.appendChild(time);
+            row.appendChild(titleWrap);
+            row.appendChild(source);
+            calendarEventList.appendChild(row);
+            continue;
+          }
           if (repeatLabel(matching[j].repeat)) {
             repeat = document.createElement("span");
             repeat.className = "event-repeat-badge";
@@ -5301,7 +5865,7 @@
         }
       }
 
-      function renderCalendar() {
+      function renderCalendar(skipGoogleFetch) {
         var year = calendarViewDate.getFullYear();
         var month = calendarViewDate.getMonth();
         var firstWeekday = new Date(year, month, 1).getDay();
@@ -5338,6 +5902,10 @@
         }
         calendarDays.innerHTML = html;
         renderSelectedDayEvents();
+        updateGoogleCalendarStatus();
+        if (!skipGoogleFetch) {
+          ensureGoogleCalendarMonth(year, month);
+        }
       }
 
       function selectCalendarDay(event) {
@@ -5370,9 +5938,15 @@
       }
 
       loadCalendarEvents();
+      loadGoogleCalendarSettings();
       showTodayCalendar();
       renderHomeTodayEvents();
       window.setInterval(renderHomeTodayEvents, 60 * 1000);
+      updateGoogleCalendarStatus();
+      refreshGoogleCalendar();
+      window.setInterval(function () {
+        refreshGoogleCalendar();
+      }, GCAL_REFRESH_MS);
       loadGarbageSchedule();
       window.setInterval(renderGarbageSummary, 10 * 60 * 1000);
       loadFamilyMemo();
@@ -5826,6 +6400,7 @@
         backupView.setAttribute("aria-hidden", "true");
         calendarView.className = "calendar-view";
         calendarView.setAttribute("aria-hidden", "true");
+        hideGoogleCalendarView();
         setActiveMenu("天気");
       }
 
@@ -5844,6 +6419,7 @@
         backupView.setAttribute("aria-hidden", "true");
         calendarView.className = "calendar-view";
         calendarView.setAttribute("aria-hidden", "true");
+        hideGoogleCalendarView();
         renderHomeTodayEvents();
         setActiveMenu("ホーム");
       }
@@ -5863,6 +6439,7 @@
         backupView.setAttribute("aria-hidden", "true");
         calendarView.className = "calendar-view";
         calendarView.setAttribute("aria-hidden", "true");
+        hideGoogleCalendarView();
         setActiveMenu("設定");
       }
 
@@ -5882,6 +6459,7 @@
         backupView.setAttribute("aria-hidden", "true");
         calendarView.className = "calendar-view";
         calendarView.setAttribute("aria-hidden", "true");
+        hideGoogleCalendarView();
         displaySettingsStatus.textContent = "";
         markDisplayControls();
         setActiveMenu("設定");
@@ -5902,6 +6480,7 @@
         backupView.setAttribute("aria-hidden", "true");
         calendarView.className = "calendar-view";
         calendarView.setAttribute("aria-hidden", "true");
+        hideGoogleCalendarView();
         populateGarbageScheduleForm();
         garbageSettingsStatus.textContent = "";
         setActiveMenu("設定");
@@ -5922,6 +6501,7 @@
         backupView.setAttribute("aria-hidden", "true");
         calendarView.className = "calendar-view";
         calendarView.setAttribute("aria-hidden", "true");
+        hideGoogleCalendarView();
         memoInput.value = familyMemo;
         updateMemoCharacterCount();
         memoStatus.textContent = "";
@@ -5944,9 +6524,26 @@
         backupView.setAttribute("aria-hidden", "false");
         calendarView.className = "calendar-view";
         calendarView.setAttribute("aria-hidden", "true");
+        hideGoogleCalendarView();
         backupCreateStatus.textContent = "";
         backupRestoreStatus.textContent = "";
         setActiveMenu("設定");
+      }
+
+      function hideGoogleCalendarView() {
+        googleCalendarView.className = "gcal-view";
+        googleCalendarView.setAttribute("aria-hidden", "true");
+      }
+
+      function openGoogleCalendarView() {
+        openSettingsView();
+        settingsView.className = "settings-view";
+        settingsView.setAttribute("aria-hidden", "true");
+        googleCalendarView.className = "gcal-view open";
+        googleCalendarView.setAttribute("aria-hidden", "false");
+        gcalUrlInput.value = gcalSettings ? gcalSettings.url : "";
+        gcalKeyInput.value = gcalSettings ? gcalSettings.key : "";
+        showGoogleCalendarSettingsStatus();
       }
 
       function openCalendarView() {
@@ -5964,6 +6561,7 @@
         backupView.setAttribute("aria-hidden", "true");
         calendarView.className = "calendar-view open";
         calendarView.setAttribute("aria-hidden", "false");
+        hideGoogleCalendarView();
         renderCalendar();
         setActiveMenu("予定");
       }
@@ -6010,6 +6608,26 @@
       openBackupFromSettingsButton.addEventListener("click", openBackupView);
       closeBackupViewButton.addEventListener("click", openSettingsView);
       closeCalendarViewButton.addEventListener("click", showHomeView);
+      openGoogleCalendarFromSettingsButton.addEventListener("click", openGoogleCalendarView);
+      closeGoogleCalendarViewButton.addEventListener("click", openSettingsView);
+      gcalSaveButton.addEventListener("click", saveGoogleCalendarSettings);
+      gcalRefreshNowButton.addEventListener("click", function () {
+        if (!gcalSettings) {
+          setGcalStatus("先にURLと合言葉を保存してください", true);
+          return;
+        }
+        setGcalStatus("読み込んでいます…", false);
+        refreshGoogleCalendar(function (success, count) {
+          if (success) {
+            setGcalStatus("更新しました（予定 " + count + "件）", false);
+          } else if (count === -1) {
+            setGcalStatus("読み込み中です。少し待ってからもう一度押してください", false);
+          } else {
+            setGcalStatus(gcalLastError, true);
+          }
+        });
+      });
+      gcalDisconnectButton.addEventListener("click", disconnectGoogleCalendar);
       todayEventsCard.addEventListener("click", function () {
         showTodayCalendar();
         openCalendarView();
